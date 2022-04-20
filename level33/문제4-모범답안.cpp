@@ -1,58 +1,41 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
-#include <string>
 using namespace std;
 
-int bucket[10];
-int n, k; //Ç°¸ñ °³¼ö, °í±â °³¼ö
+char vect[100];
 
-int getboss(int target)
-{
-	if (bucket[target] == 0) return target; //ÀÚ½ÅÀÌ º¸½º
-	int ret = getboss(bucket[target]);
-	bucket[target] = ret;
+char uFind(char ch) {
+	if (vect[ch] == 0) return ch;
+	char ret = uFind(vect[ch]);
+	vect[ch] = ret;
 	return ret;
 }
 
-void setunion(int ch1, int ch2)
-{
-	//º¸½º°¡ °°ÀºÁö ºÎÅÍ È®ÀÎ
-	int a = getboss(ch1);
-	int b = getboss(ch2);
+void uUnion(char t1, char t2) {
+	char a = uFind(t1);
+	char b = uFind(t2);
 	if (a == b) return;
-	bucket[b] = a;
+
+	if (a >= 'A' && a <= 'Z') { //Aê°€ ë¬¸ìž
+		vect[b] = a;
+	}
+	else {
+		vect[a] = b;
+	}
 }
 
 int main()
 {
+	int n, k;
 	cin >> n >> k;
+
 	char a, b;
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		cin >> a >> b;
-		int A = a - '0';
-		int B = b - '0';
-		if (a < 'A' && b < 'A') { //¼ýÀÚ 2°³
-			if (bucket[A] >= 'A') {
-				bucket[B] = bucket[A];
-				continue;
-			}
-			else if (bucket[B] >= 'A') {
-				bucket[A] = bucket[B];
-				continue;
-			}
-			setunion(A, B);
-		}
-		else { //¼ýÀÚ 1°³ + ¹®ÀÚ 1°³
-			if (a >= 'A') bucket[B] = a; //a°¡ ¹®ÀÚ
-			else bucket[A] = b; //b°¡ ¹®ÀÚ
-		}
+		uUnion(a, b);
 	}
 
-	for (int i = 1; i <= k; i++)
-	{
-		cout << (char)getboss(bucket[i]);
+	for (int i = 1; i <= k; i++) {
+		cout << uFind('0' + i);
 	}
 
 	return 0;
