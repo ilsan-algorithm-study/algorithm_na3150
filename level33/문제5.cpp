@@ -1,29 +1,64 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
-//Àç±ÍÈ£Ãâ ÀÌ¿ë
+int n;
+int bucket[10];
+int population[10];
 
-pair<int, string> arr[7] = {
-    {3,">>"}, {2,">>"}, {1,"<<"}, {3,">>"},{2,"<<"},{0,"X"},{1,"<<"} };
-
-void run(int index)
+int getboss(int target)
 {
-    if (arr[index].first == 0) {//Å×·¯¹ü ¹ß°ßÇÑ °æ¿ì
-        cout << index << "¹ø" << endl;
-        return;
-    }
-    if (arr[index].second == "<<") run(index - arr[index].first);
-    else run(index + arr[index].first);
-    cout << index << "¹ø" << endl;
+	if (bucket[target] == 0) return target; //ìì‹ ì´ ë³´ìŠ¤
+	int ret = getboss(bucket[target]);
+	bucket[target] = ret;
+	return ret;
+}
+void setunion(int ch1, int ch2)
+{
+	//ë³´ìŠ¤ê°€ ê°™ì€ì§€ ë¶€í„° í™•ì¸
+	int a = getboss(ch1);
+	int b = getboss(ch2);
+	if (a == b) return;
+	bucket[b] = a;
 }
 
+int getPopulation(char a) //ë™ë§¹êµ­ ì¸êµ¬ì˜ í•©
+{
+	int count = 0;
+	for (int i = 0; i < n; i++)
+		if (getboss(a - 'A') == getboss(i))
+			count += population[i];
+	return count;
+}
+
+int getAlly(char a) //ë™ë§¹êµ­ì˜ ìˆ˜
+{
+	int count = 0;
+	for (int i = 0; i < n; i++)
+		if (getboss(a - 'A') == getboss(i))
+			count++;
+	return count;
+}
 
 int main()
 {
-    int index;
-    cin >> index;
-    run(index);
-    return 0;
+	cin >> n;//êµ­ê°€ì˜ ìˆ˜
+	for (int i = 0; i < n; i++)
+		cin >> population[i];
+	int k; //ìƒí™©ì˜ ìˆ˜
+	cin >> k;
+	string sit;
+	char a, b;
+	for (int i = 0; i < k; i++)
+	{
+		cin >> sit >> a >> b;
+		if (sit == "alliance") setunion(a - 'A', b - 'A');
+		else {
+			if (getPopulation(a) > getPopulation(b)) n -= getAlly(b);
+			else n -= getAlly(a);
+		}
+	}
+	cout << n;
+	return 0;
 }
