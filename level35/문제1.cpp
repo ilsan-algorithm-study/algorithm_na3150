@@ -20,7 +20,6 @@ void run(int level, int start)
 
 int main()
 {
-
 	cin >> str;
 	run(0, 0);
 	return 0;
