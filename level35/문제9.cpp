@@ -2,28 +2,32 @@
 #include <string>
 #include <vector>
 using namespace std;
-int cnt;
 
-void run(int x, int y)
+int n;
+int Min = 21e8;
+string str;
+int charges[7] = { 15,20,44,22,55,16,45 };
+int sum;
+
+void run(int count, int nSum)
 {
-	if (y == 7) {
-		cnt++;
+	if (count == n) {
+		if ((sum - nSum) % 10 == 0) {
+			if (nSum < Min) Min = nSum;
+		}
 		return;
 	}
-	for (int i = -1; i <= 1; i++) //3가지 방향
-	{
-		int dx = x + i;
-		if (dx < 0 || dx>2) continue; //배열 범위 벗어나는 경우
-		run(dx, y + 1);
-	}
+	for (int i = 0; i < str.length(); i++)
+		run(count + 1, nSum + charges[str[i] - 'a']);
 }
-
 
 int main()
 {
-	char a;
-	cin >> a;
-	run(a - 'A', 0);
-	cout << cnt;
+	cin >> str;
+	cin >> n;
+	for (int i = 0; i < str.length(); i++)
+		sum += charges[str[i] - 'a'];
+	run(0, 0);
+	cout << sum - Min;
 	return 0;
 }
